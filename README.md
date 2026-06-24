@@ -18,6 +18,14 @@
 </p>
 
 <p align="center">
+  <a href="https://game.unsnow.online/td"><strong>▶ Play Online</strong></a> ·
+  <a href="https://github.com/Ooxygen7/TowerRush/blob/main/README.en.md#quick-start">Quick Start</a> ·
+  <a href="https://github.com/Ooxygen7/TowerRush/blob/main/README.en.md#deploy-the-leaderboard-server">Deploy Server</a> ·
+  <a href="https://github.com/Ooxygen7/TowerRush/blob/main/README.en.md#customization-and-extension">Customize &amp; Extend</a> ·
+  <a href="https://github.com/Ooxygen7/TowerRush/blob/main/docs/index.html">Project Homepage</a>
+</p>
+
+<p align="center">
   <a href="LICENSE"><img alt="License: MIT" src="https://img.shields.io/badge/License-MIT-f0a048?style=flat-square"></a>
   <img alt="Vanilla JS" src="https://img.shields.io/badge/Vanilla_JS-ES2020-f0a048?style=flat-square&logo=javascript&logoColor=white">
   <img alt="HTML5 Canvas" src="https://img.shields.io/badge/HTML5-Canvas-ff7a18?style=flat-square&logo=html5&logoColor=white">
@@ -302,6 +310,10 @@ TowerRush/
 欢迎 Issue 与 PR。改动游戏逻辑后，建议至少在浏览器中完成一次「选塔 → 选图 → 开始 → 通关 → 回放成功」的验证（控制台应无报错）。
 
 ## 🙏 致谢
+感谢 [Linux.do](https://linux.do) 社区提供的交流平台与支持。本项目的灵感与迭代离不开社区中各位同好的反馈与建议，特此致谢。
+
+## 🙏 致谢
+
 感谢 [Linux.do](https://linux.do) 社区提供的交流平台与支持。本项目的灵感与迭代离不开社区中各位同好的反馈与建议，特此致谢。
 
 ## 📄 许可证
