@@ -1,0 +1,32 @@
+# --- Background music (copyright-protected, not distributed) ---
+*.mp3
+
+# --- Backups & originals ---
+index.html.orig
+index.html.bak-*
+备份勿动/
+
+# --- Build / dev tooling (temporary scripts) ---
+_*.js
+.playwright-cli/
+output/
+
+# --- Python ---
+__pycache__/
+*.pyc
+
+# --- Local server data ---
+*.db
+*.db-wal
+*.db-shm
+*.env
+!server/tf-leaderboard.env.example
+
+# --- Editor / OS / agent dirs ---
+.agents/
+.codex/
+.DS_Store
+Thumbs.db
+*.swp
+.idea/
+.vscode/

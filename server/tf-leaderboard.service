@@ -1,0 +1,18 @@
+[Unit]
+Description=TF leaderboard, replay, and LinuxDo OAuth service
+After=network-online.target
+Wants=network-online.target
+
+[Service]
+Type=simple
+User=www-data
+Group=www-data
+EnvironmentFile=/etc/tf-leaderboard.env
+ExecStart=/usr/bin/python3 /opt/tf-leaderboard/leaderboard_server.py
+Restart=always
+RestartSec=3
+NoNewPrivileges=true
+PrivateTmp=true
+
+[Install]
+WantedBy=multi-user.target

@@ -1,0 +1,158 @@
+<!DOCTYPE html>
+<html lang="zh">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>TowerRush · 快节奏 HTML5 塔防</title>
+<meta name="description" content="零依赖、零构建的单页 HTML5 塔防游戏 —— 24 种防御塔、7 类敌人、6 张地图、30 波进攻，程序化音效，内置在线排行榜与回放。">
+<link rel="icon" type="image/png" href="logo.png">
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+SC:wght@400;500;700;900&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --bg:#1a1a1a; --surface:#2c2c2c; --surface2:#262626; --primary:#f0a048;
+    --primary-soft:#ffb968; --gold:#ffe082; --cyan:#4dd0e1; --text:#e0e0e0;
+    --muted:#9e9e9e; --border:#444;
+  }
+  *{box-sizing:border-box;margin:0;padding:0}
+  html{scroll-behavior:smooth}
+  body{
+    font-family:"Noto Sans SC",system-ui,-apple-system,"Segoe UI",sans-serif;
+    background:var(--bg); color:var(--text); line-height:1.7;
+    background-image:
+      radial-gradient(900px 500px at 50% -10%, rgba(240,160,72,.18), transparent 70%),
+      radial-gradient(700px 400px at 100% 0%, rgba(77,208,225,.08), transparent 60%);
+  }
+  a{color:var(--primary);text-decoration:none}
+  .wrap{max-width:1040px;margin:0 auto;padding:0 22px}
+  .section{padding:64px 0}
+  .eyebrow{color:var(--primary);font-weight:700;letter-spacing:.12em;font-size:.8rem;text-transform:uppercase}
+  h2{font-size:1.9rem;font-weight:900;margin:6px 0 26px}
+  h2 .bar{color:var(--primary)}
+
+  /* hero */
+  .hero{text-align:center;padding:78px 22px 50px}
+  .hero img{width:128px;height:128px;filter:drop-shadow(0 10px 30px rgba(240,160,72,.35));border-radius:24px}
+  .hero h1{font-size:3.4rem;font-weight:900;margin:18px 0 6px;letter-spacing:.04em;
+    background:linear-gradient(120deg,var(--gold),var(--primary) 55%,var(--primary-soft));
+    -webkit-background-clip:text;background-clip:text;-webkit-text-fill-color:transparent}
+  .hero p.lead{max-width:640px;margin:0 auto 8px;color:#cfcfcf;font-size:1.06rem}
+  .hero p.sub{color:var(--muted);font-size:.92rem}
+  .cta{display:flex;gap:14px;justify-content:center;flex-wrap:wrap;margin-top:28px}
+  .btn{display:inline-flex;align-items:center;gap:8px;padding:13px 26px;border-radius:10px;font-weight:700;font-size:1rem;border:1px solid transparent;transition:transform .12s,box-shadow .12s}
+  .btn:hover{transform:translateY(-2px)}
+  .btn-primary{background:linear-gradient(160deg,var(--primary),#e08a2c);color:#1a1a1a;box-shadow:0 8px 24px rgba(240,160,72,.35)}
+  .btn-ghost{background:var(--surface);color:var(--text);border-color:var(--border)}
+  .badges{display:flex;gap:8px;justify-content:center;flex-wrap:wrap;margin-top:26px}
+  .badges img{height:22px}
+
+  /* stats */
+  .stats{display:grid;grid-template-columns:repeat(4,1fr);gap:16px;margin-top:8px}
+  .stat{background:linear-gradient(160deg,var(--surface),var(--surface2));border:1px solid var(--border);border-radius:14px;padding:22px 12px;text-align:center}
+  .stat .n{font-size:2.4rem;font-weight:900;color:var(--primary);line-height:1}
+  .stat .l{color:var(--muted);font-size:.9rem;margin-top:6px}
+
+  /* features */
+  .grid{display:grid;grid-template-columns:repeat(3,1fr);gap:18px}
+  .card{background:linear-gradient(160deg,var(--surface),var(--surface2));border:1px solid var(--border);border-radius:14px;padding:24px;transition:border-color .15s,transform .15s}
+  .card:hover{border-color:var(--primary);transform:translateY(-3px)}
+  .card .ico{font-size:1.7rem}
+  .card h3{margin:10px 0 6px;font-size:1.12rem;color:var(--gold)}
+  .card p{color:#c4c4c4;font-size:.95rem}
+
+  /* pills */
+  .pills{display:flex;flex-wrap:wrap;gap:10px}
+  .pill{background:var(--surface);border:1px solid var(--border);border-radius:999px;padding:7px 15px;font-size:.92rem}
+  .pill b{color:var(--primary)}
+  .pill.cyan b{color:var(--cyan)}
+
+  pre{background:#141414;border:1px solid var(--border);border-radius:12px;padding:18px;overflow:auto;color:#d6d6d6;font-size:.86rem;line-height:1.6}
+  code{font-family:ui-monospace,"SFMono-Regular",Consolas,monospace}
+  .note{color:var(--muted);font-size:.9rem;margin-top:10px}
+
+  footer{border-top:1px solid var(--border);padding:34px 22px;text-align:center;color:var(--muted);font-size:.9rem;margin-top:30px}
+
+  @media(max-width:760px){
+    .hero h1{font-size:2.5rem}
+    .grid{grid-template-columns:1fr 1fr}
+    .stats{grid-template-columns:1fr 1fr}
+  }
+  @media(max-width:480px){ .grid{grid-template-columns:1fr} }
+</style>
+</head>
+<body>
+
+  <header class="hero">
+    <img src="logo.png" alt="TowerRush logo">
+    <h1>TowerRush</h1>
+    <p class="lead">一款零依赖、零构建的单页 HTML5 塔防游戏。24 种防御塔、7 类敌人、6 张地图、30 波进攻，配以程序化合成音效与在线排行榜回放。</p>
+    <p class="sub">纯原生 JavaScript + Canvas · 双击即玩</p>
+    <div class="cta">
+      <a class="btn btn-primary" href="https://game.unsnow.online/td">▶ 立即试玩</a>
+      <a class="btn btn-ghost" href="https://github.com/Ooxygen7/TowerRush">★ GitHub 源码</a>
+    </div>
+    <div class="badges">
+      <img alt="MIT" src="https://img.shields.io/badge/License-MIT-f0a048?style=flat-square">
+      <img alt="Vanilla JS" src="https://img.shields.io/badge/Vanilla_JS-ES2020-f0a048?style=flat-square&logo=javascript&logoColor=white">
+      <img alt="HTML5 Canvas" src="https://img.shields.io/badge/HTML5-Canvas-ff7a18?style=flat-square&logo=html5&logoColor=white">
+      <img alt="Web Audio" src="https://img.shields.io/badge/Web_Audio-程序化-4dd0e1?style=flat-square">
+      <img alt="No build" src="https://img.shields.io/badge/构建-无需打包-2c2c2c?style=flat-square">
+    </div>
+  </header>
+
+  <section class="section wrap" style="padding-top:10px">
+    <div class="stats">
+      <div class="stat"><div class="n">24</div><div class="l">防御塔</div></div>
+      <div class="stat"><div class="n">7</div><div class="l">敌人类型</div></div>
+      <div class="stat"><div class="n">6</div><div class="l">地图</div></div>
+      <div class="stat"><div class="n">30</div><div class="l">进攻波次</div></div>
+    </div>
+  </section>
+
+  <section class="section wrap">
+    <div class="eyebrow">Features</div>
+    <h2><span class="bar">|</span> 核心特性</h2>
+    <div class="grid">
+      <div class="card"><div class="ico">🗼</div><h3>24 种防御塔</h3><p>每种 4–9 级成长，满级解锁专属 EX 形态：爆炸箭雨、连锁闪电、巡航导弹、灼日审判……</p></div>
+      <div class="card"><div class="ico">👾</div><h3>多样敌人</h3><p>快速、强壮、护盾、召唤者与最终首领，各有抗性与机制，逼你不断调整布局。</p></div>
+      <div class="card"><div class="ico">🎵</div><h3>零文件音效</h3><p>全部音效由 Web Audio API 实时合成，不依赖任何音频资源，加载即响。</p></div>
+      <div class="card"><div class="ico">🏆</div><h3>排行榜 & 回放</h3><p>LinuxDo 登录后分图上榜，可逐帧观看任意记录的完整操作回放。</p></div>
+      <div class="card"><div class="ico">📱</div><h3>移动端适配</h3><p>横屏、触控与高分屏自适应，手机上同样流畅可玩。</p></div>
+      <div class="card"><div class="ico">🧩</div><h3>纯原生无依赖</h3><p>没有框架、没有打包步骤。克隆下来双击 <code>index.html</code> 即可运行。</p></div>
+    </div>
+  </section>
+
+  <section class="section wrap">
+    <div class="eyebrow">Arsenal</div>
+    <h2><span class="bar">|</span> 部分防御塔</h2>
+    <div class="pills">
+      <span class="pill"><b>弩塔</b> 性价比箭塔</span>
+      <span class="pill"><b>加农炮</b> 溅射</span>
+      <span class="pill"><b>术击塔</b> 破防</span>
+      <span class="pill"><b>特斯拉塔</b> 连锁电击</span>
+      <span class="pill"><b>导弹井</b> 范围爆破</span>
+      <span class="pill"><b>日照塔</b> 持续灼烧</span>
+      <span class="pill"><b>机枪阵线</b> 多目标扫射</span>
+      <span class="pill"><b>聚光灯</b> 区域燃烧</span>
+      <span class="pill cyan"><b>电核心</b> 攻速光环</span>
+      <span class="pill cyan"><b>音乐台</b> 增益光环</span>
+      <span class="pill cyan"><b>军事基地</b> 召唤友军</span>
+      <span class="pill cyan"><b>引力信标</b> 击退</span>
+    </div>
+  </section>
+
+  <section class="section wrap">
+    <div class="eyebrow">Get Started</div>
+    <h2><span class="bar">|</span> 本地运行</h2>
+    <pre><code>git clone https://github.com/Ooxygen7/TowerRush.git
+cd TowerRush
+# 直接双击 index.html，或：
+python -m http.server 8080   # 访问 http://localhost:8080/</code></pre>
+    <p class="note">采用经典 &lt;script&gt;，<code>file://</code> 直接打开即可运行，无需任何依赖或构建。完整数据表与部署指南见 <a href="https://github.com/Ooxygen7/TowerRush#readme">README</a>。</p>
+  </section>
+
+  <footer>
+    用 ❤️ 与原生 JavaScript 打造 · <a href="https://github.com/Ooxygen7/TowerRush">Ooxygen7/TowerRush</a> · MIT License
+  </footer>
+
+</body>
+</html>

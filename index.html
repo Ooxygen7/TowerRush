@@ -1,0 +1,383 @@
+<!DOCTYPE html>
+<html lang="zh">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>TowerRush-快节奏塔防游戏</title>
+    <link rel="icon" type="image/png" href="logo.png">
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+SC:wght@400;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="css/styles.css">
+</head>
+<body>
+
+<div id="rotate-hint" aria-hidden="true">
+    <svg class="rot-icon" viewBox="0 0 64 64" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+        <rect x="23" y="6" width="30" height="46" rx="5"/>
+        <circle cx="38" cy="45" r="2.2" fill="currentColor" stroke="none"/>
+        <path d="M18 26 A18 18 0 0 1 31 11"/>
+        <path d="M18 26 l-5 -4 M18 26 l7 -2"/>
+    </svg>
+    <h2>请横置设备</h2>
+    <p>本游戏在横屏模式下体验最佳</p>
+</div>
+
+<div id="selection-screen" class="screen">
+    <h1>战前选择</h1>
+    <div id="selection-top-actions">
+        <button id="open-announcement-btn" type="button">📢 查看更新公告</button>
+        <button id="open-leaderboard-btn" type="button">🏆 排行榜</button>
+        <button id="open-wiki-btn" type="button">📖 Wiki</button>
+        <button id="open-settings-btn" type="button">🔧 设置</button>
+    </div>
+    <div id="selection-slots"></div>
+    <div id="selection-main">
+        <div id="tower-pool"></div>
+        <div id="selection-info">
+            <h4>防御塔信息</h4>
+            <p>请将鼠标悬停在下方的防御塔上以查看详细介绍。</p>
+        </div>
+    </div>
+    <div id="selection-buttons-container">
+        <button id="select-map-btn" class="selection-btn" disabled>选择地图 (请选择 1-7 个塔)</button>
+        <button id="start-game-test-btn" class="selection-btn" disabled>进入测试场</button>
+    </div>
+</div>
+
+<div id="map-selection-screen" class="screen">
+    <h1>选择地图</h1>
+    <div id="map-list"></div>
+    <div id="map-selection-buttons-container">
+        <button id="back-to-tower-select-btn" class="selection-btn" style="background-color: #777;">返回</button>
+        <button id="start-game-from-map-btn" class="selection-btn" disabled>开始游戏</button>
+    </div>
+</div>
+
+
+<div id="game-wrapper">
+    <div id="game-container">
+        <div id="skill-rail" aria-label="已解锁技能"></div>
+        <div id="settings-dock">
+            <div id="pause-row">
+                <button id="pause-button" type="button" aria-pressed="false" title="暂停游戏">
+                    <svg viewBox="0 0 48 48" aria-hidden="true"><path fill="currentColor" d="M10 8h10v32H10zm18 0h10v32H28z"/></svg>
+                    <span>暂停</span>
+                </button>
+                <button id="quick-restart-btn" type="button" title="以当前配置从头开始">
+                    <svg viewBox="0 0 24 24" aria-hidden="true"><path fill="currentColor" d="M17.65 6.35A7.958 7.958 0 0 0 12 4c-4.42 0-7.99 3.58-7.99 8s3.57 8 7.99 8c3.73 0 6.84-2.55 7.73-6h-2.08A5.99 5.99 0 0 1 12 18c-3.31 0-6-2.69-6-6s2.69-6 6-6c1.66 0 3.14.69 4.22 1.78L13 11h7V4z"/></svg>
+                    <span>重开</span>
+                </button>
+            </div>
+            <div id="settings-row">
+            <button id="settings-button" type="button" title="设置">
+                <svg viewBox="0 0 24 24" aria-hidden="true"><path fill="currentColor" d="M19.14 12.94c.04-.3.06-.61.06-.94 0-.32-.02-.64-.07-.94l2.03-1.58c.18-.14.23-.41.12-.61l-1.92-3.32c-.12-.22-.37-.29-.59-.22l-2.39.96c-.5-.38-1.03-.7-1.62-.94l-.36-2.54c-.04-.24-.24-.41-.48-.41h-3.84c-.24 0-.43.17-.47.41l-.36 2.54c-.59.24-1.13.57-1.62.94l-2.39-.96c-.22-.08-.47 0-.59.22L2.74 8.87c-.12.21-.08.47.12.61l2.03 1.58c-.05.3-.09.63-.09.94s.02.64.07.94l-2.03 1.58c-.18.14-.23.41-.12.61l1.92 3.32c.12.22.37.29.59.22l2.39-.96c.5.38 1.03.7 1.62.94l.36 2.54c.05.24.24.41.48.41h3.84c.24 0 .44-.17.47-.41l.36-2.54c.59-.24 1.13-.56 1.62-.94l2.39.96c.22.08.47 0 .59-.22l1.92-3.32c.12-.22.07-.47-.12-.61l-2.01-1.58zM12 15.6c-1.98 0-3.6-1.62-3.6-3.6s1.62-3.6 3.6-3.6 3.6 1.62 3.6 3.6-1.62 3.6-3.6 3.6z"/></svg>
+                <span>设置</span>
+            </button>
+                <button id="abandon-button" type="button" title="放弃本局">
+                    <svg viewBox="0 0 24 24" aria-hidden="true"><path fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.8" d="M8.5 11V5.5a1.5 1.5 0 0 1 3 0V10m0-5.5a1.5 1.5 0 0 1 3 0V10m0-4a1.5 1.5 0 0 1 3 0v5m-9-3a1.5 1.5 0 0 0-3 0v5c0 4.4 2.8 7 7 7s7-3.1 7-7v-2a1.5 1.5 0 0 0-3 0v1"/></svg>
+                    <span>放弃</span>
+                </button>
+            </div>
+        </div>
+        <div id="canvas-container">
+            <!-- OPTIMIZATION: Added backgroundCanvas for static elements -->
+            <canvas id="backgroundCanvas"></canvas>
+            <canvas id="gameCanvas"></canvas>
+            <div id="wave-countdown" role="status" aria-live="polite"></div>
+        </div>
+        <div id="floating-info-panel"></div>
+        <div id="tooltip"></div>
+        <div id="ui-panel">
+            <div class="stats-display">
+                <div id="money-display">金钱: 2000</div>
+                <div id="hp-display">基地生命: 3</div>
+                <div id="wave-display">波次: 0/30</div>
+            </div>
+            <button class="action-btn" id="start-wave-btn" style="display: none;"></button>
+            <div id="speed-controls" role="group" aria-label="游戏速度"></div>
+            <div id="tower-selection">
+
+            </div>
+        </div>
+    </div>
+</div>
+
+
+<div id="modal">
+    <div id="modal-content">
+        <h2 id="modal-title">游戏结束</h2>
+        <p id="modal-text">你的基地被摧毁了。</p>
+        <div id="score-summary" aria-live="polite"></div>
+        <div class="modal-actions">
+            <button id="upload-score-btn" type="button">上传到排行榜</button>
+            <button id="replay-btn">重新开始</button>
+            <button id="restart-btn">返回菜单</button>
+        </div>
+    </div>
+</div>
+
+<div id="confirm-modal">
+    <div id="confirm-modal-content">
+        <h2>快速重开</h2>
+        <p>确定要以当前配置从头开始吗？当前进度将立即丢失。</p>
+        <div class="confirm-actions">
+            <button id="confirm-restart-yes" class="action-btn">确认重开</button>
+            <button id="confirm-restart-no" class="action-btn">取消</button>
+        </div>
+    </div>
+</div>
+
+<div id="abandon-confirm-modal" role="dialog" aria-modal="true" aria-labelledby="abandon-confirm-title">
+    <div id="abandon-confirm-content">
+        <h2 id="abandon-confirm-title">放弃本局？</h2>
+        <p>确定后将立即结束当前对局并返回主菜单。</p>
+        <div class="confirm-actions">
+            <button id="confirm-abandon-yes" class="action-btn">确认放弃</button>
+            <button id="confirm-abandon-no" class="action-btn">继续对局</button>
+        </div>
+    </div>
+</div>
+
+<div id="preferences-modal" role="dialog" aria-modal="true" aria-labelledby="preferences-title">
+    <section id="preferences-content">
+        <button id="preferences-close-x" type="button" aria-label="关闭设置">✕</button>
+        <header class="preferences-header">
+            <h2 id="preferences-title">游戏设置</h2>
+        </header>
+        <div id="preferences-body">
+            <section class="preference-section">
+                <h3>音频</h3>
+                <div class="preference-audio-grid">
+                    <label class="settings-row" for="bgm-volume"><span>背景音乐</span><output id="bgm-volume-value">45%</output><input class="settings-slider" id="bgm-volume" type="range" min="0" max="100" value="45"></label>
+                    <label class="settings-row" for="sfx-volume"><span>战斗音效</span><output id="sfx-volume-value">50%</output><input class="settings-slider" id="sfx-volume" type="range" min="0" max="100" value="50"></label>
+                </div>
+            </section>
+            <section class="preference-section">
+                <h3>防御塔详情</h3>
+                <p>经典模式在防御塔旁显示浮窗；现代模式会在战场下方显示横向指挥面板。</p>
+                <div class="detail-mode-options" role="radiogroup" aria-label="防御塔详情显示方式">
+                    <label class="detail-mode-option"><input type="radio" name="tower-detail-mode" value="classic" checked><span><b>经典（默认）</b><small>靠近被选中防御塔的浮动详情窗。</small></span></label>
+                    <label class="detail-mode-option"><input type="radio" name="tower-detail-mode" value="modern"><span><b>现代</b><small>横向详情面板，更适合电脑操作。</small></span></label>
+                </div>
+            </section>
+            <section class="preference-section">
+                <h3>键盘快捷键</h3>
+                <p>先选中防御塔后可使用升级、出售和目标选择。技能 1–7 依照当前解锁顺序对应，最早解锁的技能优先使用靠前数字键。</p>
+                <div class="shortcut-grid" id="shortcut-grid">
+                    <div class="shortcut-row"><span>升级防御塔</span><button class="keybinding-capture" type="button" data-key-binding="upgrade">W</button></div>
+                    <div class="shortcut-row"><span>出售防御塔</span><button class="keybinding-capture" type="button" data-key-binding="sell">S</button></div>
+                    <div class="shortcut-row"><span>目标选择器向左</span><button class="keybinding-capture" type="button" data-key-binding="targetPrevious">Q</button></div>
+                    <div class="shortcut-row"><span>目标选择器向右</span><button class="keybinding-capture" type="button" data-key-binding="targetNext">E</button></div>
+                    <div class="shortcut-row"><span>技能 1</span><button class="keybinding-capture" type="button" data-key-binding="skill1">1</button></div>
+                    <div class="shortcut-row"><span>技能 2</span><button class="keybinding-capture" type="button" data-key-binding="skill2">2</button></div>
+                    <div class="shortcut-row"><span>技能 3</span><button class="keybinding-capture" type="button" data-key-binding="skill3">3</button></div>
+                    <div class="shortcut-row"><span>技能 4</span><button class="keybinding-capture" type="button" data-key-binding="skill4">4</button></div>
+                    <div class="shortcut-row"><span>技能 5</span><button class="keybinding-capture" type="button" data-key-binding="skill5">5</button></div>
+                    <div class="shortcut-row"><span>技能 6</span><button class="keybinding-capture" type="button" data-key-binding="skill6">6</button></div>
+                    <div class="shortcut-row"><span>技能 7</span><button class="keybinding-capture" type="button" data-key-binding="skill7">7</button></div>
+                </div>
+            </section>
+        </div>
+        <footer class="preferences-footer"><button id="restore-shortcuts-btn" type="button">恢复默认快捷键</button></footer>
+    </section>
+</div>
+
+<div id="announcement-modal" role="dialog" aria-label="更新公告">
+    <div id="announcement-content">
+        <button id="announce-close-x" type="button" aria-label="关闭">✕</button>
+        <h2>测试赛季平衡性调整</h2>
+        <p class="announce-sub">以下内容为本次测试赛季相较上一版本的实际数值与机制调整。</p>
+        <p class="announce-compare-note"><span class="announce-value-before">旧版本</span><span class="announce-value-arrow">→</span><span class="announce-value-after">当前版本</span></p>
+        <div class="announce-legend">
+            <span class="tag tag-buff">增强</span>
+            <span class="tag tag-nerf">调整</span>
+            <span class="tag tag-new">新增</span>
+            <span class="tag tag-rework">重做</span>
+        </div>
+        <div class="announce-body">
+            <section class="announce-tower">
+                <h3 style="color:#8bc34a">弩塔</h3>
+                <ul>
+                    <li><span class="tag tag-nerf">调整</span>攻击间隔（1/2/3/4/EX）：<span class="announce-value-before">0.50 / 0.47 / 0.42 / 0.37 / 0.33秒</span><span class="announce-value-arrow">→</span><span class="announce-value-after">0.65 / 0.65 / 0.60 / 0.60 / 0.50秒</span></li>
+                    <li><span class="tag tag-nerf">调整</span>射程（1/2/3/4/EX）：<span class="announce-value-before">6 / 6.5 / 7 / 8 / 8</span><span class="announce-value-arrow">→</span><span class="announce-value-after">5 / 5.5 / 6 / 6.5 / 7</span></li>
+                    <li><span class="tag tag-nerf">调整</span>价格（1/2/3/4/EX）：<span class="announce-value-before">150 / 200 / 250 / 350 / 1550</span><span class="announce-value-arrow">→</span><span class="announce-value-after">200 / 250 / 300 / 500 / 1500</span></li>
+                    <li><span class="tag tag-nerf">调整</span>EX爆炸箭半径：<span class="announce-value-before">3.5</span><span class="announce-value-arrow">→</span><span class="announce-value-after">3</span></li>
+                </ul>
+            </section>
+            <section class="announce-tower">
+                <h3 style="color:#bda08f">加农炮</h3>
+                <ul>
+                    <li><span class="tag tag-rework">调整</span>射程（1/2/3/4/EX）：<span class="announce-value-before">5 / 7 / 9 / 10 / 11</span><span class="announce-value-arrow">→</span><span class="announce-value-after">6.5 / 7 / 8 / 9 / 10</span></li>
+                    <li><span class="tag tag-nerf">调整</span>价格（1/2/3/4/EX）：<span class="announce-value-before">400 / 300 / 500 / 700 / 2800</span><span class="announce-value-arrow">→</span><span class="announce-value-after">400 / 500 / 600 / 700 / 2000</span></li>
+                    <li><span class="tag tag-buff">增强</span>溅射伤害：<span class="announce-value-before">50%</span><span class="announce-value-arrow">→</span><span class="announce-value-after">60%</span></li>
+                    <li><span class="tag tag-nerf">调整</span>EX攻击间隔：<span class="announce-value-before">0.58秒</span><span class="announce-value-arrow">→</span><span class="announce-value-after">0.70秒</span></li>
+                    <li><span class="tag tag-rework">重做</span>EX特殊激光对首领：<span class="announce-value-before">不生效</span><span class="announce-value-arrow">→</span><span class="announce-value-after">普通攻击的5倍伤害</span></li>
+                </ul>
+            </section>
+            <section class="announce-tower">
+                <h3 style="color:#9c27b0">术击塔</h3>
+                <ul>
+                    <li><span class="tag tag-buff">增强</span>伤害（1/2/3/4/EX）：<span class="announce-value-before">10 / 17 / 23 / 30 / 80</span><span class="announce-value-arrow">→</span><span class="announce-value-after">12 / 17 / 25 / 32 / 100</span></li>
+                    <li><span class="tag tag-buff">增强</span>射程（1/2/3/4/EX）：<span class="announce-value-before">6 / 7 / 8 / 8.5 / 9</span><span class="announce-value-arrow">→</span><span class="announce-value-after">7 / 7 / 8 / 8 / 10</span></li>
+                    <li><span class="tag tag-buff">调整</span>价格（1/2/3/4/EX）：<span class="announce-value-before">500 / 500 / 800 / 1000 / 3800</span><span class="announce-value-arrow">→</span><span class="announce-value-after">500 / 600 / 700 / 800 / 2500</span></li>
+                    <li><span class="tag tag-rework">重做</span>EX效果：<span class="announce-value-before">每次命中降低控制抗性4%，对首领无效</span><span class="announce-value-arrow">→</span><span class="announce-value-after">每次攻击叠加1层易伤，最多50层；每层受伤+1%</span></li>
+                </ul>
+            </section>
+            <section class="announce-tower">
+                <h3 style="color:#29b6f6">减速塔</h3>
+                <ul>
+                    <li><span class="tag tag-nerf">调整</span>射程（1/2/3/4/EX）：<span class="announce-value-before">3 / 3.5 / 4 / 5 / 7</span><span class="announce-value-arrow">→</span><span class="announce-value-after">3 / 3.5 / 4 / 4.5 / 5</span></li>
+                    <li><span class="tag tag-nerf">调整</span>减速（1/2/3/4/EX）：<span class="announce-value-before">20% / 30% / 40% / 50% / 60%</span><span class="announce-value-arrow">→</span><span class="announce-value-after">20% / 25% / 30% / 35% / 40%</span></li>
+                    <li><span class="tag tag-nerf">调整</span>攻击间隔（1/2/3/4/EX）：<span class="announce-value-before">1.67 / 1.50 / 1.33 / 1.17 / 1.08秒</span><span class="announce-value-arrow">→</span><span class="announce-value-after">1.67 / 1.60 / 1.50 / 1.40 / 1.20秒</span></li>
+                    <li><span class="tag tag-nerf">调整</span>价格（1/2/3/4/EX）：<span class="announce-value-before">500 / 500 / 600 / 650 / 2700</span><span class="announce-value-arrow">→</span><span class="announce-value-after">400 / 500 / 600 / 700 / 2200</span></li>
+                    <li><span class="tag tag-nerf">调整</span>减速持续时间：<span class="announce-value-before">2秒</span><span class="announce-value-arrow">→</span><span class="announce-value-after">4秒</span>；4级与EX级范围加成：<span class="announce-value-before">受音乐台影响</span><span class="announce-value-arrow">→</span><span class="announce-value-after">不受音乐台影响</span></li>
+                    <li><span class="tag tag-buff">增强</span>冰封持续时间（普通 / 首领）：<span class="announce-value-before">1 / 1秒</span><span class="announce-value-arrow">→</span><span class="announce-value-after">4 / 2秒</span></li>
+                </ul>
+            </section>
+            <section class="announce-tower">
+                <h3 style="color:#ff7043">爆破塔</h3>
+                <ul>
+                    <li><span class="tag tag-nerf">调整</span>伤害（1/2/3/4/EX）：<span class="announce-value-before">10 / 15 / 20 / 25 / 80</span><span class="announce-value-arrow">→</span><span class="announce-value-after">8 / 13 / 20 / 30 / 80</span></li>
+                    <li><span class="tag tag-nerf">调整</span>爆炸半径（1/2/3/4/EX）：<span class="announce-value-before">3 / 3.5 / 4 / 5 / 8</span><span class="announce-value-arrow">→</span><span class="announce-value-after">2.5 / 3 / 4 / 5 / 6</span></li>
+                    <li><span class="tag tag-nerf">调整</span>价格（1/2/3/4/EX）：<span class="announce-value-before">500 / 500 / 700 / 800 / 2800</span><span class="announce-value-arrow">→</span><span class="announce-value-after">600 / 650 / 700 / 800 / 3000</span></li>
+                    <li><span class="tag tag-buff">增强</span>EX每命中1名敌人的增伤：<span class="announce-value-before">10%</span><span class="announce-value-arrow">→</span><span class="announce-value-after">20%</span></li>
+                    <li><span class="tag tag-nerf">调整</span>普通放置上限：<span class="announce-value-before">无上限</span><span class="announce-value-arrow">→</span><span class="announce-value-after">8座</span></li>
+                </ul>
+            </section>
+            <section class="announce-tower">
+                <h3 style="color:#ff5252">伽马射线</h3>
+                <ul>
+                    <li><span class="tag tag-buff">增强</span>攻击间隔（1/2/3/4）：<span class="announce-value-before">2.0 / 1.83 / 1.67 / 1.50秒</span><span class="announce-value-arrow">→</span><span class="announce-value-after">1.50 / 1.30 / 1.10 / 0.80秒</span></li>
+                    <li><span class="tag tag-buff">增强</span>连锁目标（1/2/3/4）：<span class="announce-value-before">3 / 4 / 6 / 8</span><span class="announce-value-arrow">→</span><span class="announce-value-after">5 / 7 / 9 / 12</span></li>
+                    <li><span class="tag tag-buff">增强</span>连锁范围（1/2/3/4）：<span class="announce-value-before">4 / 5 / 6 / 8</span><span class="announce-value-arrow">→</span><span class="announce-value-after">5 / 6 / 7 / 8</span></li>
+                    <li><span class="tag tag-buff">增强</span>连锁伤害：<span class="announce-value-before">基础伤害的70%</span><span class="announce-value-arrow">→</span><span class="announce-value-after">基础伤害的90%</span>；放置上限：<span class="announce-value-before">5座</span><span class="announce-value-arrow">→</span><span class="announce-value-after">10座</span></li>
+                </ul>
+            </section>
+            <section class="announce-tower">
+                <h3 style="color:#607d8b">机枪阵线</h3>
+                <ul>
+                    <li><span class="tag tag-buff">增强</span>伤害（1/2/3/4/EX）：<span class="announce-value-before">2.5 / 3.5 / 4.5 / 6 / 10</span><span class="announce-value-arrow">→</span><span class="announce-value-after">4 / 5 / 6 / 8 / 12</span></li>
+                    <li><span class="tag tag-buff">增强</span>价格（1/2/3/4/EX）：<span class="announce-value-before">1500 / 1450 / 1750 / 2250 / 8000</span><span class="announce-value-arrow">→</span><span class="announce-value-after">1200 / 1400 / 1600 / 2000 / 6000</span></li>
+                    <li><span class="tag tag-buff">增强</span>普通 / EX放置上限：<span class="announce-value-before">3 / 1</span><span class="announce-value-arrow">→</span><span class="announce-value-after">5 / 3</span></li>
+                </ul>
+            </section>
+            <section class="announce-tower">
+                <h3 style="color:#ffd700">窃取爪</h3>
+                <ul>
+                    <li><span class="tag tag-buff">增强</span>伤害（1/2/3/4/EX）：<span class="announce-value-before">1 / 1.5 / 2 / 4 / 10</span><span class="announce-value-arrow">→</span><span class="announce-value-after">2 / 3 / 5 / 7 / 10</span></li>
+                    <li><span class="tag tag-buff">增强</span>攻击间隔（1/2/3/4/EX）：<span class="announce-value-before">1.67 / 1.33 / 1.17 / 0.92 / 0.83秒</span><span class="announce-value-arrow">→</span><span class="announce-value-after">1.50 / 1.30 / 1.10 / 0.90 / 0.83秒</span></li>
+                    <li><span class="tag tag-buff">增强</span>窃取间隔（1/2/3/4/EX）：<span class="announce-value-before">20 / 18 / 15 / 10 / 8次</span><span class="announce-value-arrow">→</span><span class="announce-value-after">20 / 20 / 15 / 15 / 10次</span></li>
+                    <li><span class="tag tag-buff">增强</span>每次窃取（1/2/3/4/EX）：<span class="announce-value-before">20 / 25 / 30 / 50 / 60</span><span class="announce-value-arrow">→</span><span class="announce-value-after">30 / 35 / 40 / 60 / 70</span></li>
+                    <li><span class="tag tag-rework">调整</span>赏金标记击杀奖励：<span class="announce-value-before">20</span><span class="announce-value-arrow">→</span><span class="announce-value-after">30</span>；EX前置窃取：<span class="announce-value-before">1000</span><span class="announce-value-arrow">→</span><span class="announce-value-after">1500</span></li>
+                    <li><span class="tag tag-nerf">调整</span>价格（1/2/3/4/EX）：<span class="announce-value-before">150 / 150 / 200 / 400 / 1500</span><span class="announce-value-arrow">→</span><span class="announce-value-after">200 / 250 / 300 / 450 / 1800</span></li>
+                </ul>
+            </section>
+            <section class="announce-tower">
+                <h3 style="color:#e91e63">音乐台</h3>
+                <ul>
+                    <li><span class="tag tag-nerf">调整</span>范围加成（1/2/3/4）：<span class="announce-value-before">15% / 20% / 25% / 30%</span><span class="announce-value-arrow">→</span><span class="announce-value-after">10% / 12% / 15% / 20%</span></li>
+                    <li><span class="tag tag-nerf">调整</span>价格（1/2/3/4）：<span class="announce-value-before">800 / 1200 / 1400 / 1600</span><span class="announce-value-arrow">→</span><span class="announce-value-after">1200 / 1500 / 1800 / 2500</span></li>
+                </ul>
+            </section>
+            <section class="announce-tower">
+                <h3 style="color:#f44336">矩阵塔</h3>
+                <ul>
+                    <li><span class="tag tag-nerf">调整</span>价格（1/2/3/4/EX）：<span class="announce-value-before">300 / 300 / 500 / 800 / 3000</span><span class="announce-value-arrow">→</span><span class="announce-value-after">300 / 400 / 600 / 800 / 4000</span></li>
+                </ul>
+            </section>
+            <section class="announce-tower">
+                <h3 style="color:#B0BEC5">导弹井</h3>
+                <ul>
+                    <li><span class="tag tag-nerf">调整</span>EX对首领的当前生命值伤害：<span class="announce-value-before">5%</span><span class="announce-value-arrow">→</span><span class="announce-value-after">3%</span></li>
+                    <li><span class="tag tag-nerf">调整</span>对首领的眩晕时间：<span class="announce-value-before">首领原眩晕时间</span><span class="announce-value-arrow">→</span><span class="announce-value-after">首领原眩晕时间的70%</span></li>
+                </ul>
+            </section>
+            <section class="announce-tower">
+                <h3 style="color:#4FC3F7">引力信标</h3>
+                <ul>
+                    <li><span class="tag tag-rework">重做</span>触发条件：<span class="announce-value-before">无目标时也按周期释放</span><span class="announce-value-arrow">→</span><span class="announce-value-after">范围内有敌人后等待0.5秒释放</span></li>
+                    <li><span class="tag tag-nerf">调整</span>射程（1/2/3/4）：<span class="announce-value-before">4 / 4.5 / 5 / 5.5</span><span class="announce-value-arrow">→</span><span class="announce-value-after">3 / 3.5 / 4 / 4.5</span></li>
+                    <li><span class="tag tag-nerf">调整</span>攻击间隔（1/2/3/4）：<span class="announce-value-before">6.67 / 6.33 / 6.00 / 5.33秒</span><span class="announce-value-arrow">→</span><span class="announce-value-after">6.50 / 6.40 / 6.20 / 6.00秒</span></li>
+                    <li><span class="tag tag-nerf">调整</span>推回距离（1/2/3/4）：<span class="announce-value-before">1 / 1.5 / 2 / 2.2</span><span class="announce-value-arrow">→</span><span class="announce-value-after">1 / 1.3 / 1.7 / 2</span></li>
+                    <li><span class="tag tag-buff">调整</span>价格（1/2/3/4）：<span class="announce-value-before">300 / 300 / 500 / 700</span><span class="announce-value-arrow">→</span><span class="announce-value-after">200 / 300 / 400 / 500</span></li>
+                </ul>
+            </section>
+            <section class="announce-tower">
+                <h3 style="color:#FFD700">功勋神龛</h3>
+                <ul>
+                    <li><span class="tag tag-nerf">调整</span>额外金钱倍率（1/2/3/4）：<span class="announce-value-before">20% / 40% / 60% / 80%</span><span class="announce-value-arrow">→</span><span class="announce-value-after">10% / 30% / 50% / 70%</span></li>
+                </ul>
+            </section>
+            <section class="announce-tower">
+                <h3 style="color:#fff8e1">聚光灯</h3>
+                <ul>
+                    <li><span class="tag tag-buff">增强</span>伤害（1/2/3/4/EX）：<span class="announce-value-before">5 / 10 / 20 / 40 / 50</span><span class="announce-value-arrow">→</span><span class="announce-value-after">8 / 13 / 27 / 50 / 84</span></li>
+                    <li><span class="tag tag-buff">增强</span>EX区域内友方暴击率：<span class="announce-value-before">15%</span><span class="announce-value-arrow">→</span><span class="announce-value-after">25%</span></li>
+                </ul>
+            </section>
+            <section class="announce-tower">
+                <h3 style="color:#9c27b0">敌人调整</h3>
+                <ul>
+                    <li><span class="tag tag-nerf">调整</span>护盾敌人本体血量倍率：<span class="announce-value-before">×1.4</span><span class="announce-value-arrow">→</span><span class="announce-value-after">×1.7</span>；护盾生命值维持基础血量的50%。</li>
+                    <li><span class="tag tag-nerf">调整</span>首领基础移动速度：<span class="announce-value-before">×0.9</span><span class="announce-value-arrow">→</span><span class="announce-value-after">×1.0</span></li>
+                </ul>
+            </section>
+            <section class="announce-tower">
+                <h3 style="color:#9c27b0">新敌人：召唤者 <span class="tag tag-new">新增</span></h3>
+                <ul>
+                    <li><span class="tag tag-new">新增</span>出现波次：<span class="announce-value-before">无</span><span class="announce-value-arrow">→</span><span class="announce-value-after">第10、15、20、25波各1名，固定队列末尾</span></li>
+                    <li><span class="tag tag-new">新增</span>本体数据：<span class="announce-value-before">无</span><span class="announce-value-arrow">→</span><span class="announce-value-after">生命×3、移速×0.5、体积18px</span></li>
+                    <li><span class="tag tag-new">新增</span>召唤机制：<span class="announce-value-before">无</span><span class="announce-value-arrow">→</span><span class="announce-value-after">每50秒召唤2名普通敌人和1名护盾敌人</span></li>
+                </ul>
+            </section>
+        </div>
+        <div class="announce-footer">
+            <label class="announce-dismiss"><input type="checkbox" id="announce-dont-show"> 不再显示</label>
+            <button id="announce-ok" type="button">知道了</button>
+        </div>
+    </div>
+</div>
+
+<div id="leaderboard-modal" role="dialog" aria-modal="true" aria-label="排行榜">
+    <section id="leaderboard-content">
+        <button id="leaderboard-close-x" type="button" aria-label="关闭排行榜">✕</button>
+        <header class="leaderboard-header">
+            <h2>地图排行榜：测试赛季</h2>
+            <p>游戏仍处于测试阶段，变动是经常发生的</p>
+        </header>
+        <div id="leaderboard-account"></div>
+        <div id="leaderboard-map-tabs" role="tablist" aria-label="地图筛选"></div>
+        <div id="leaderboard-status" role="status" aria-live="polite"></div>
+        <ol id="leaderboard-list"></ol>
+    </section>
+</div>
+
+<div id="wiki-modal" role="dialog" aria-modal="true" aria-label="图鉴 Wiki">
+    <section id="wiki-content">
+        <button id="wiki-close-x" type="button" aria-label="关闭 Wiki">✕</button>
+        <header class="wiki-header">
+            <h2><svg class="ui-svg-icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M4.5 5.5c2.2-1.1 4.7-.9 7.5.8v12c-2.8-1.7-5.3-1.9-7.5-.8zM19.5 5.5c-2.2-1.1-4.7-.9-7.5.8v12c2.8-1.7 5.3-1.9 7.5-.8z"/></svg>无聊塔防 · 图鉴 Wiki</h2>
+            <p>防御塔与敌人的完整数据、特性与实际模型参考。</p>
+        </header>
+        <div id="wiki-tabs" role="tablist" aria-label="Wiki 分类"></div>
+        <div id="wiki-body"></div>
+    </section>
+</div>
+
+
+
+    <script src="js/constants.js"></script>
+    <script src="js/audio.js"></script>
+    <script src="js/data/maps.js"></script>
+    <script src="js/data/towers.js"></script>
+    <script src="js/entities/tower.js"></script>
+    <script src="js/entities/enemy.js"></script>
+    <script src="js/entities/projectiles.js"></script>
+    <script src="js/entities/effects.js"></script>
+    <script src="js/game-logic.js"></script>
+    <script src="js/selection.js"></script>
+    <script src="js/main.js"></script>
+    <script src="js/leaderboard.js"></script>
+    <script src="js/wiki.js"></script>
+</body>
+</html>
+
