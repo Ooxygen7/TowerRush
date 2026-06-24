@@ -5,7 +5,7 @@
 <h1 align="center">TowerRush · 快节奏塔防</h1>
 
 <p align="center">
-  一款<strong>零依赖、零构建</strong>的单页 HTML5 塔防游戏 —— 24 种防御塔、7 类敌人、6 张地图、30 波进攻，<br>
+  一款<strong>零依赖、零构建</strong>的HTML5 塔防游戏 —— 24 种防御塔、7 类敌人、6 张地图、30 波进攻，<br>
   程序化合成音效，内置在线排行榜与回放系统。纯原生 JavaScript + Canvas 编写。
 </p>
 
